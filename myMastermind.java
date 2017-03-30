@@ -65,6 +65,19 @@ public class myMastermind {
         System.out.println("-- You've won! --"); //replace with code to show dialog with option to start new game
     }
 
+    private class click implements ActionListener{   
+            int x;
+
+            public click(int i){
+                x=i;
+            } 
+            public void actionPerformed(ActionEvent e) {
+                x=(x+1)%colours;
+              ((JButton)(e.getSource())).setBackground(getColor(x));
+            }
+         
+    }
+
     private void createGUI(){
       mainFrame = new JFrame("Mastermind by Mateusz Janusz");
       mainFrame.setSize(500,500);
@@ -88,7 +101,9 @@ public class myMastermind {
       and add it to the panel */
       for(int i=0; i<colours; i++){
         secretButtons[i] = new JButton();
-        secretButtons[i].addActionListener(getColor(i));
+        secretButtons[i].addActionListener(new click(i));
+        secretButtons[i].setBackground(getColor(i));
+        secretButtons[i].setOpaque(true);
         topPanel.add(secretButtons[i]);
       }
       guessPanel.add(guessButton);
@@ -111,12 +126,6 @@ public class myMastermind {
       }); 
    }
 
-   private void setButtonColour(i){
-
-    public void actionPerformed(ActionEvent e) {
-              ((JButton)(e.getSource())).setBackground(getColor(i));
-            }
-   }
     /*
      * Method to create a secret code:
      * user can choose a secret code by selecting a colour for each peg (max 6 colours)
