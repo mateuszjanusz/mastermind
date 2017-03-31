@@ -1,9 +1,5 @@
 // Mastermind game by Mateusz Janusz (mjanu001@gold.ac.uk)
 // March/April 2017
-// Question 2:
-// - cleaned up and commented code
-// - fixed colours on mac
-// - set game to only 4 colours
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -36,7 +32,7 @@ public class Mastermind extends JFrame  implements ActionListener {
 	JButton[] computerGuess;
 	int state[][];
 	int[] hiddenGuess;
-	JButton guessButton = new JButton("Guess");
+	JButton guessButton = new JButton("Start computer guess");
 	JPanel colouredPanel = new JPanel();
 	JPanel whitesPanel = new JPanel();
 	JPanel blacksPanel = new JPanel();
@@ -56,8 +52,8 @@ public class Mastermind extends JFrame  implements ActionListener {
 	static int whites (int [] one, int [] two){
 		boolean found;
 		int val=0;
-		int [ ] oneA = new int[one.length]; 
-		int [ ] twoA = new int[one.length];
+		int [] oneA = new int[one.length]; 
+		int [] twoA = new int[one.length];
 
 		for (int i=0;i<one.length;i++){
 			oneA[i]=one[i]; twoA[i]=two[i];
@@ -130,34 +126,57 @@ public class Mastermind extends JFrame  implements ActionListener {
 		blacksPanel.setBorder(BorderFactory.createEmptyBorder(20, 20,
 		20, 20));
 
-		
+		/* class to implement event to change colour background 
+			it uses bing to set values 
+			using mod (%) it keeps values in range from 0 to maximum number of available colours
+		*/
 		class bing implements ActionListener{   
-			int x,y; 
+			int x=0,y,k=0;
+			boolean secret=false;
 		   	
 			public void actionPerformed(ActionEvent e) {
-			  state[x][y]=(state[x][y]+1)%numColors; 
-			  System.out.println("state " + x + " " +y);
-			  ((JButton)(e.getSource())).setBackground(choose(state[x][y]));
+				if(secret==false){
+					state[x][y]=(state[x][y]+1)%numColors; 
+			  		System.out.println(x + " " +y + " state " + state[x][y]);
+			  		((JButton)(e.getSource())).setBackground(choose(state[x][y]));
+				} else {	//bing and actions for secret code state[x][y]
+					state[x][y]=(state[x][y]+1)%numColors; 
+					hiddenGuess[x]=x;
+			  		((JButton)(e.getSource())).setBackground(choose(state[x][y]));
+			  		System.out.println("button: "+hiddenGuess[x]+ " colour " + state[x][y]);
+
+				}	  
 			}
-		       
+			//bing constructor for secret code 
+		    public bing (int p, int q, boolean isSecret){ 
+		    	x=p;
+		    	y=q;
+		    	secret=isSecret;
+		    } 
+		    //bing constructor for guess buttons
 		    public bing (int p,int q){
-		         x=p;
-				 y=q;
+		        x=p;
+				y=q;
 		    }	
+		}
+		for(int i=0;i<width;i++){
+			hiddenGuess[i]=0;
 		}
 		
 		for (int k = 0; k < width; k++){
 		  computerGuess[k]= new JButton(); 
-		  computerGuess[k].setVisible(false);
- 		  computerGuessPanel.add(computerGuess[k]);
-		  hiddenGuess[k]=rand.nextInt(numColors);// just for now //get k random values between 0 and number of available colours
+		  computerGuess[k].setVisible(true);
+		  computerGuess[k].setOpaque(true);
 		  computerGuess[k].setBackground(choose(hiddenGuess[k]));  
+		  computerGuess[k].addActionListener(new bing(k, 0, true));
+		  computerGuessPanel.add(computerGuess[k]);
+		  //hiddenGuess[k]=k;// just for now //get k random values between 0 and number of available colours
 		}
 		
 		for (int i = 0; i < height; i++) 
 			for (int j = 0; j < width; j++)
 			 {
-			   System.out.println(i +" "+j);
+			   System.out.println(i+" "+j);
 			   state[i][j]=0;
 			   colouredPegs [i][j]= new JButton();
 			   colouredPegs [i][j].addActionListener(new bing(i,j));
@@ -195,15 +214,16 @@ public class Mastermind extends JFrame  implements ActionListener {
 		20, 20));
 		topPanel.setLayout(new GridLayout(1,3));
 		topPanel.add(new JLabel("Blacks",JLabel.CENTER));
+		topPanel.add(new JLabel("Secret code",JLabel.CENTER));
 		topPanel.add(computerGuessPanel);
 		topPanel.add(new JLabel("Whites",JLabel.CENTER));
 		add(topPanel,"North");
-		setDefaultCloseOperation(3); // specify one of several options for the close button
+		setDefaultCloseOperation(3); //specify one of several options for the close button
 		setTitle("Mastermind");
 		setMinimumSize(new Dimension(width*50,height*50));
 		pack(); // sizes the frame so that all its contents are at or above their preferred sizes
 		setVisible(true); 
-		guessButton.addActionListener(this); //adds click listener to quess button
+		guessButton.addActionListener(this); //adds click listener to guess button
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -227,12 +247,11 @@ public class Mastermind extends JFrame  implements ActionListener {
 				System.exit(0);
 			} else { 
 				dispose(); /* causes the JFrame window to be destroyed and cleaned up by the operating system
-								not like system.exit which causes the Java VM to terminate completely.*/
+								not like system.exit which causes the Java VM to terminate completely. */
 				new Mastermind(height,width,numColors); //create new window game again
 			}
 		}
-		if (numGuesses<height){ // there is still a number of chances to guess 
-			
+		// if (numGuesses<height){ //there is still a number of chances to guess 
 		  for (int i=0;i<whiteThings;i++) 
 		  	whites[numGuesses][i].setVisible(true); //show white pegs if any 
 		  for (int i=0;i<blackThings;i++)
@@ -258,12 +277,12 @@ public class Mastermind extends JFrame  implements ActionListener {
 				new Mastermind(height,width,numColors); //create window game again
 				}
 		  }
-	   }		
+	   // }		
 	}
 	
 	
 	public static void main(String[] args) {
-		new Mastermind(10,4,4); //10 chances, 4 pegs, 4 colours (as in question 2)
+		new Mastermind(10,4,6); // chances, pegs, colours
 	}
 
 	

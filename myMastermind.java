@@ -29,8 +29,9 @@ public class myMastermind {
     private JLabel computerLabel;
     private JPanel topPanel;
     private JPanel guessPanel;
-    private JButton guessButton;
+    private JButton startButton;
     private JButton[] secretButtons;
+    private JButton[][] guessButtons;
 
 
     /*
@@ -71,9 +72,9 @@ public class myMastermind {
             public click(int i){
                 x=i;
             } 
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e){
                 x=(x+1)%colours;
-              ((JButton)(e.getSource())).setBackground(getColor(x));
+                ((JButton)(e.getSource())).setBackground(getColor(x));
             }
          
     }
@@ -94,8 +95,9 @@ public class myMastermind {
       guessPanel.setLayout(new FlowLayout());
 
       /* buttons */
-      guessButton = new JButton("Start guessing");
-      secretButtons = new JButton[colours];      
+      startButton = new JButton("Start guessing");
+      secretButtons = new JButton[colours];   
+      guessButtons = new JButton[pegs][colours];   
       
       /* create expected number of buttons for secret code 
       and add it to the panel */
@@ -106,7 +108,17 @@ public class myMastermind {
         secretButtons[i].setOpaque(true);
         topPanel.add(secretButtons[i]);
       }
-      guessPanel.add(guessButton);
+
+      for (int i = 0; i < guesses; i++){
+            for (int j = 0; j < pegs; j++){
+                guessButtons[i][j] = new JButton();
+                guessButtons[i][j].setBackground(getColor(i));
+                guessButtons[i][j].setOpaque(true);
+                guessPanel.add(guessButtons[i][j]);
+             }
+      }
+
+      guessPanel.add(startButton);
 
       /* padding */
       topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10,
