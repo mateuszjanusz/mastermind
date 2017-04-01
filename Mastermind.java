@@ -1,5 +1,5 @@
 // Mastermind game by Mateusz Janusz (mjanu001@gold.ac.uk)
-// March/April 2017
+// 	March/April 2017
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -38,7 +38,7 @@ public class Mastermind extends JFrame  implements ActionListener {
 	JPanel whitesPanel = new JPanel();
 	JPanel blacksPanel = new JPanel();
 	JPanel computerGuessPanel = new JPanel();
-    JPanel panel2 = new JPanel();
+    //JPanel panel2 = new JPanel();
 	Random rand;
 
 	//method to check and return number of black pegs
@@ -220,60 +220,77 @@ public class Mastermind extends JFrame  implements ActionListener {
 	}
 	//events for start guess button
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("secret code: " + Arrays.toString(hiddenGuess));
-		System.out.println("guess code: " + Arrays.toString(state[numGuesses]));
+		for(int g=0; g<height;g++){
+			//----\/---- call method to generate guess code here
+			guessNaive();
 
-		int whiteThings=whites(state[numGuesses],hiddenGuess); // get number of white pegs 
-		int blackThings=blacks(state[numGuesses],hiddenGuess); // get number of black pegs
-		for (int i=0;i<width;i++)
-			colouredPegs[numGuesses][i].setEnabled(false);
-		
-		if (blackThings==width){  //no more chances to guess left 
-			for (int i=0;i<blackThings;i++)
-				blacks[numGuesses][i].setVisible(true); 
-			for (int i=0;i<width;i++) {
-		  		computerGuess[i].setOpaque(true);
-				computerGuess[i].setVisible(true);
-			}
-				
-			int n = JOptionPane.showConfirmDialog(this,
-					"You've Won! Would you like to play again?", "",
-					JOptionPane.YES_NO_OPTION);
-			if (n == JOptionPane.NO_OPTION) {
-				System.exit(0);
-			} else { 
-				dispose(); /* causes the JFrame window to be destroyed and cleaned up by the operating system
-								not like system.exit which causes the Java VM to terminate completely. */
-				new Mastermind(height,width,numColors); //create new window game again
-			}
-		}
-		if (numGuesses<height){ //there is still a number of chances to guess 
-		  for (int i=0;i<whiteThings;i++) 
-		  	whites[numGuesses][i].setVisible(true); //show white pegs if any 
-		  for (int i=0;i<blackThings;i++)
-		  	blacks[numGuesses][i].setVisible(true); //show black pegs
-		  numGuesses++; 
-		  if (numGuesses<height) {
-			  	for (int i=0;i<width;i++){
-			  		colouredPegs[numGuesses][i].setOpaque(true);
-			  		colouredPegs[numGuesses][i].setVisible(true);
-			  	} 
-			  } else { 
-				  	for (int i=0;i<width;i++) {
-				  		computerGuess[i].setOpaque(true);
-				  		computerGuess[i].setVisible(true);
-				  	}
-					int n = JOptionPane.showConfirmDialog(this,
-							"You've lost! Would you like to play again?", "You've Won!",
-							JOptionPane.YES_NO_OPTION);
-					if (n == JOptionPane.NO_OPTION) {
-						System.exit(0); //terminate completely
-				} else { 
-				dispose(); //destroy and clean up the window
-				new Mastermind(height,width,numColors); //create window game again
+			System.out.println("Try " + (g+1));
+			System.out.println("secret code: " + Arrays.toString(hiddenGuess));
+			System.out.println("guess code: " + Arrays.toString(state[numGuesses]));
+
+			int whiteThings=whites(state[numGuesses],hiddenGuess); // get number of white pegs 
+			int blackThings=blacks(state[numGuesses],hiddenGuess); // get number of black pegs
+			for (int i=0;i<width;i++)
+				colouredPegs[numGuesses][i].setEnabled(false);
+			
+			if (blackThings==width){  //no more chances to guess left 
+				for (int i=0;i<blackThings;i++)
+					blacks[numGuesses][i].setVisible(true); 
+				for (int i=0;i<width;i++) {
+			  		computerGuess[i].setOpaque(true);
+					computerGuess[i].setVisible(true);
 				}
-		  }
+					
+				int n = JOptionPane.showConfirmDialog(this,
+						"You've Won! Would you like to play again?", "",
+						JOptionPane.YES_NO_OPTION);
+				if (n == JOptionPane.NO_OPTION) {
+					System.exit(0);
+				} else { 
+					dispose(); /* causes the JFrame window to be destroyed and cleaned up by the operating system
+									not like system.exit which causes the Java VM to terminate completely. */
+					new Mastermind(height,width,numColors); //create new window game again
+				}
+			}
+			if (numGuesses<height){ //there is still a number of chances to guess 
+			  for (int i=0;i<whiteThings;i++) 
+			  	whites[numGuesses][i].setVisible(true); //show white pegs if any 
+			  for (int i=0;i<blackThings;i++)
+			  	blacks[numGuesses][i].setVisible(true); //show black pegs
+			  numGuesses++; 
+			  if (numGuesses<height) {
+				  	for (int i=0;i<width;i++){
+				  		colouredPegs[numGuesses][i].setOpaque(true);
+				  		colouredPegs[numGuesses][i].setVisible(true);
+				  	} 
+				  } else { 
+					  	for (int i=0;i<width;i++) {
+					  		computerGuess[i].setOpaque(true);
+					  		computerGuess[i].setVisible(true);
+					  	}
+						int n = JOptionPane.showConfirmDialog(this,
+								"You've lost! Would you like to play again?", "You've Won!",
+								JOptionPane.YES_NO_OPTION);
+						if (n == JOptionPane.NO_OPTION) {
+							System.exit(0); //terminate completely
+					} else { 
+					dispose(); //destroy and clean up the window
+					new Mastermind(height,width,numColors); //create window game again
+					}
+			  }
+		   }
 	   }		
+	}
+/* 
+	naive method to guess secret code that ignores number of white and black pegs
+*/
+	private void guessNaive(){
+		for(int i=0;i<width;i++)
+			state[numGuesses][i]=rand.nextInt(numColors);
+	}
+
+	private void guessKnuth(){
+
 	}
 	
 	
