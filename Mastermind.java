@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.util.Random;
+import java.util.Arrays;
 
 public class Mastermind extends JFrame  implements ActionListener {
         
@@ -131,55 +132,47 @@ public class Mastermind extends JFrame  implements ActionListener {
 			using mod (%) it keeps values in range from 0 to maximum number of available colours
 		*/
 		class bing implements ActionListener{   
-			int x=0,y,k=0;
-			boolean secret=false;
+			int x,y;
+			boolean secret;
 		   	
 			public void actionPerformed(ActionEvent e) {
-				if(secret==false){
+				if(secret==false){ //events for guesses
 					state[x][y]=(state[x][y]+1)%numColors; 
-			  		System.out.println(x + " " +y + " state " + state[x][y]);
+			  		System.out.println("GUESS: level: " + x + " button: " +y + " colour: " + state[x][y]);
 			  		((JButton)(e.getSource())).setBackground(choose(state[x][y]));
-				} else {	//bing and actions for secret code state[x][y]
+				} else {	//events for secret code 
 					state[x][y]=(state[x][y]+1)%numColors; 
-					hiddenGuess[x]=x;
+					hiddenGuess[x]=state[x][y];
 			  		((JButton)(e.getSource())).setBackground(choose(state[x][y]));
-			  		System.out.println("button: "+hiddenGuess[x]+ " colour " + state[x][y]);
+			  		System.out.println("SECRET: button: "+hiddenGuess[x]+ " colour: " + state[x][y]);
 
 				}	  
 			}
-			//bing constructor for secret code 
+			//bing constructor 
 		    public bing (int p, int q, boolean isSecret){ 
 		    	x=p;
 		    	y=q;
 		    	secret=isSecret;
 		    } 
-		    //bing constructor for guess buttons
-		    public bing (int p,int q){
-		        x=p;
-				y=q;
-		    }	
-		}
-		for(int i=0;i<width;i++){
-			hiddenGuess[i]=0;
 		}
 		
 		for (int k = 0; k < width; k++){
+		  hiddenGuess[k]=0; //set red bg by default
 		  computerGuess[k]= new JButton(); 
 		  computerGuess[k].setVisible(true);
 		  computerGuess[k].setOpaque(true);
 		  computerGuess[k].setBackground(choose(hiddenGuess[k]));  
 		  computerGuess[k].addActionListener(new bing(k, 0, true));
 		  computerGuessPanel.add(computerGuess[k]);
-		  //hiddenGuess[k]=k;// just for now //get k random values between 0 and number of available colours
 		}
 		
 		for (int i = 0; i < height; i++) 
 			for (int j = 0; j < width; j++)
 			 {
 			   System.out.println(i+" "+j);
-			   state[i][j]=0;
+			   state[i][j]=0; //set red bg by default
 			   colouredPegs [i][j]= new JButton();
-			   colouredPegs [i][j].addActionListener(new bing(i,j));
+			   colouredPegs [i][j].addActionListener(new bing(i,j, false));
 			   colouredPegs [i][j].setBackground(choose(state[i][j]));
 			   colouredPegs [i][j].setOpaque(true);
 
@@ -225,8 +218,11 @@ public class Mastermind extends JFrame  implements ActionListener {
 		setVisible(true); 
 		guessButton.addActionListener(this); //adds click listener to guess button
 	}
-
+	//events for start guess button
 	public void actionPerformed(ActionEvent e) {
+		System.out.println("secret code: " + Arrays.toString(hiddenGuess));
+		System.out.println("guess code: " + Arrays.toString(state[numGuesses]));
+
 		int whiteThings=whites(state[numGuesses],hiddenGuess); // get number of white pegs 
 		int blackThings=blacks(state[numGuesses],hiddenGuess); // get number of black pegs
 		for (int i=0;i<width;i++)
@@ -251,7 +247,7 @@ public class Mastermind extends JFrame  implements ActionListener {
 				new Mastermind(height,width,numColors); //create new window game again
 			}
 		}
-		// if (numGuesses<height){ //there is still a number of chances to guess 
+		if (numGuesses<height){ //there is still a number of chances to guess 
 		  for (int i=0;i<whiteThings;i++) 
 		  	whites[numGuesses][i].setVisible(true); //show white pegs if any 
 		  for (int i=0;i<blackThings;i++)
@@ -277,7 +273,7 @@ public class Mastermind extends JFrame  implements ActionListener {
 				new Mastermind(height,width,numColors); //create window game again
 				}
 		  }
-	   // }		
+	   }		
 	}
 	
 	
