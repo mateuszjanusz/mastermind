@@ -221,10 +221,20 @@ public class Mastermind extends JFrame  implements ActionListener {
 	//events for start guess button
 	public void actionPerformed(ActionEvent e) {
 		for(int g=0; g<height;g++){
-			//----\/---- call method to generate guess code here
-			guessNaive();
 
-			System.out.println("Try " + (g+1));
+			// ask for method to use
+			Object[] options = { "Naive method", "Cleverer method"};
+			int d = JOptionPane.showOptionDialog(this,
+						"Would you like to use Naive method?", "",
+						JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+						null, options, null);
+
+			if (d == JOptionPane.NO_OPTION) {
+				guessKnuth();
+			} else { 
+				guessNaive(g);
+			}
+			
 			System.out.println("secret code: " + Arrays.toString(hiddenGuess));
 			System.out.println("guess code: " + Arrays.toString(state[numGuesses]));
 
@@ -233,6 +243,7 @@ public class Mastermind extends JFrame  implements ActionListener {
 			for (int i=0;i<width;i++)
 				colouredPegs[numGuesses][i].setEnabled(false);
 			
+
 			if (blackThings==width){  //no more chances to guess left 
 				for (int i=0;i<blackThings;i++)
 					blacks[numGuesses][i].setVisible(true); 
@@ -282,15 +293,25 @@ public class Mastermind extends JFrame  implements ActionListener {
 	   }		
 	}
 /* 
-	naive method to guess secret code that ignores number of white and black pegs
+	naive method to guess secret code 
 */
-	private void guessNaive(){
-		for(int i=0;i<width;i++)
-			state[numGuesses][i]=rand.nextInt(numColors);
-	}
+	private void guessNaive(int attempt){
+		System.out.println("guessing using Naive method...");
+		int pos = 0;
+		int b = blacks(state[attempt], hiddenGuess); //check number of colours in the right position
+		while(b<4){
+			state[attempt][pos]=rand.nextInt(numColors); //choose random colour for the button
+			int db = blacks(state[attempt], hiddenGuess); 
+			if(db>b) //check now if there is a match, if yes then move to next button
+				pos++;	
+			b = blacks(state[attempt], hiddenGuess); //else try again
+		}
+	} 
 
 	private void guessKnuth(){
-
+		System.out.println("guessing using Knuth method...");
+		for(int i=0;i<width;i++) 
+			state[numGuesses][i]=rand.nextInt(numColors); //random for now
 	}
 	
 	
