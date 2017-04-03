@@ -33,7 +33,7 @@ public class Mastermind extends JFrame  implements ActionListener {
 	JButton[] computerGuess;
 	int state[][];
 	int[] hiddenGuess;
-	JButton guessButton = new JButton("Start computer guess");
+	JButton guessButton = new JButton("Start guessing");
 	JPanel colouredPanel = new JPanel();
 	JPanel whitesPanel = new JPanel();
 	JPanel blacksPanel = new JPanel();
@@ -207,7 +207,7 @@ public class Mastermind extends JFrame  implements ActionListener {
 		20, 20));
 		topPanel.setLayout(new GridLayout(1,3));
 		topPanel.add(new JLabel("Blacks",JLabel.CENTER));
-		topPanel.add(new JLabel("Secret code",JLabel.CENTER));
+		topPanel.add(new JLabel("Set secret code",JLabel.CENTER));
 		topPanel.add(computerGuessPanel);
 		topPanel.add(new JLabel("Whites",JLabel.CENTER));
 		add(topPanel,"North");
@@ -218,30 +218,33 @@ public class Mastermind extends JFrame  implements ActionListener {
 		setVisible(true); 
 		guessButton.addActionListener(this); //adds click listener to guess button
 	}
-	//events for start guess button
+	//events for guess button
 	public void actionPerformed(ActionEvent e) {
+
 		for(int g=0; g<height;g++){
+			 // ask for method to use
+				Object[] options = { "Naive method", "Cleverer method"};
+				int d = JOptionPane.showOptionDialog(this,
+							"Which method would you like to use?", "",
+							JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+							null, options, null);
 
-			// ask for method to use
-			Object[] options = { "Naive method", "Cleverer method"};
-			int d = JOptionPane.showOptionDialog(this,
-						"Would you like to use Naive method?", "",
-						JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-						null, options, null);
-
-			if (d == JOptionPane.NO_OPTION) {
-				guessKnuth();
-			} else { 
-				guessNaive(g);
-			}
-			
+				if (d == JOptionPane.NO_OPTION) {
+					guessKnuth();
+				} else { 
+					guessNaive(g);
+				} 
+				
 			System.out.println("secret code: " + Arrays.toString(hiddenGuess));
 			System.out.println("guess code: " + Arrays.toString(state[numGuesses]));
 
 			int whiteThings=whites(state[numGuesses],hiddenGuess); // get number of white pegs 
 			int blackThings=blacks(state[numGuesses],hiddenGuess); // get number of black pegs
-			for (int i=0;i<width;i++)
+
+			for (int i=0;i<width;i++){
 				colouredPegs[numGuesses][i].setEnabled(false);
+				computerGuess[i].setEnabled(false); // don't allow to change secret code anymore
+			}
 			
 
 			if (blackThings==width){  //no more chances to guess left 
@@ -268,12 +271,14 @@ public class Mastermind extends JFrame  implements ActionListener {
 			  	whites[numGuesses][i].setVisible(true); //show white pegs if any 
 			  for (int i=0;i<blackThings;i++)
 			  	blacks[numGuesses][i].setVisible(true); //show black pegs
+
 			  numGuesses++; 
 			  if (numGuesses<height) {
 				  	for (int i=0;i<width;i++){
 				  		colouredPegs[numGuesses][i].setOpaque(true);
 				  		colouredPegs[numGuesses][i].setVisible(true);
-				  	} 
+				  	}
+
 				  } else { 
 					  	for (int i=0;i<width;i++) {
 					  		computerGuess[i].setOpaque(true);
@@ -302,10 +307,13 @@ public class Mastermind extends JFrame  implements ActionListener {
 		while(b<4){
 			state[attempt][pos]=rand.nextInt(numColors); //choose random colour for the button
 			int db = blacks(state[attempt], hiddenGuess); 
-			if(db>b) //check now if there is a match, if yes then move to next button
+			if(db>b){ //check now if there is a match, if yes then move to next button
+				colouredPegs [attempt][pos].setBackground(choose(state[attempt][pos]));
 				pos++;	
+			} 
 			b = blacks(state[attempt], hiddenGuess); //else try again
 		}
+
 	} 
 
 	private void guessKnuth(){
