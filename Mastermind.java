@@ -41,7 +41,9 @@ public class Mastermind extends JFrame  implements ActionListener {
     //JPanel panel2 = new JPanel();
 	Random rand;
 
-	//method to check and return number of black pegs
+	/* method to check and return number of black pegs 
+		(the guess which is correct in both color and position)
+	*/
 	static int blacks (int [] one, int [] two){
 		int val=0;
 		for (int i=0;i<one.length;i++){
@@ -49,7 +51,9 @@ public class Mastermind extends JFrame  implements ActionListener {
 		}
 	    return val;
 	}
-	//method to check and return number of white pegs
+	/* method to check and return number of white pegs 
+		(the existence of a correct color code peg placed in the wrong position)
+	*/
 	static int whites (int [] one, int [] two){
 		boolean found;
 		int val=0;
@@ -222,7 +226,9 @@ public class Mastermind extends JFrame  implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		for(int g=0; g<height;g++){
-			 // ask for method to use
+
+			if(g==0){
+				//ask what method to use
 				Object[] options = { "Naive method", "Cleverer method"};
 				int d = JOptionPane.showOptionDialog(this,
 							"Which method would you like to use?", "",
@@ -230,11 +236,13 @@ public class Mastermind extends JFrame  implements ActionListener {
 							null, options, null);
 
 				if (d == JOptionPane.NO_OPTION) {
-					guessKnuth();
+					guessClever(g);
 				} else { 
-					guessNaive(g);
+					guessNaive();
 				} 
-				
+			}
+			 
+
 			System.out.println("secret code: " + Arrays.toString(hiddenGuess));
 			System.out.println("guess code: " + Arrays.toString(state[numGuesses]));
 
@@ -285,7 +293,7 @@ public class Mastermind extends JFrame  implements ActionListener {
 					  		computerGuess[i].setVisible(true);
 					  	}
 						int n = JOptionPane.showConfirmDialog(this,
-								"You've lost! Would you like to play again?", "You've Won!",
+								"You've lost! Would you like to play again?", "",
 								JOptionPane.YES_NO_OPTION);
 						if (n == JOptionPane.NO_OPTION) {
 							System.exit(0); //terminate completely
@@ -298,25 +306,33 @@ public class Mastermind extends JFrame  implements ActionListener {
 	   }		
 	}
 /* 
-	naive method to guess secret code 
+	cleverer method to guess secret code 
 */
-	private void guessNaive(int attempt){
+	private void guessClever(int attempt){
 		System.out.println("guessing using Naive method...");
 		int pos = 0;
+		int col = 0;
+		int counter = 0;
 		int b = blacks(state[attempt], hiddenGuess); //check number of colours in the right position
 		while(b<4){
-			state[attempt][pos]=rand.nextInt(numColors); //choose random colour for the button
+			counter++;
+			state[attempt][pos]=col; //choose colour for the button
 			int db = blacks(state[attempt], hiddenGuess); 
 			if(db>b){ //check now if there is a match, if yes then move to next button
-				colouredPegs [attempt][pos].setBackground(choose(state[attempt][pos]));
+				colouredPegs [attempt][pos].setBackground(choose(state[attempt][pos])); //show correct guess on buttons
 				pos++;	
-			} 
-			b = blacks(state[attempt], hiddenGuess); //else try again
+			}
+			//else try again
+			col = (col+1)%numColors; //keep colour in range 
+			b = blacks(state[attempt], hiddenGuess); 
 		}
+		System.out.println("Number of attempts: " + counter);
 
 	} 
-
-	private void guessKnuth(){
+/* 
+	naive method to guess secret code that ignores blacks and white
+*/
+	private void guessNaive(){
 		System.out.println("guessing using Knuth method...");
 		for(int i=0;i<width;i++) 
 			state[numGuesses][i]=rand.nextInt(numColors); //random for now
