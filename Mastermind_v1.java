@@ -1,10 +1,9 @@
-/* 
-	Mastermind game by Mateusz Janusz (mjanu001@gold.ac.uk)
- 			March/April 2017
- 		Question 2:
-
-*/
-
+// Mastermind game by Mateusz Janusz (mjanu001@gold.ac.uk)
+// March/April 2017
+// Question 2:
+// - tidied up and commented code
+// - fixed colours on mac
+// - set game to only 4 colours
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -25,7 +24,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.util.Random;
 
-public class Mastermind_v2 extends JFrame  implements ActionListener {
+public class Mastermind_v1 extends JFrame  implements ActionListener {
         
 	int width;
 	int height;
@@ -42,10 +41,11 @@ public class Mastermind_v2 extends JFrame  implements ActionListener {
 	JPanel whitesPanel = new JPanel();
 	JPanel blacksPanel = new JPanel();
 	JPanel computerGuessPanel = new JPanel();
-    JPanel panel2 = new JPanel();
 	Random rand;
 
-	//method to check and return number of black pegs
+	/* method to check and return number of black pegs 
+		(the guess which is correct in both color and position)
+	*/
 	static int blacks (int [] one, int [] two){
 		int val=0;
 		for (int i=0;i<one.length;i++){
@@ -53,7 +53,9 @@ public class Mastermind_v2 extends JFrame  implements ActionListener {
 		}
 	    return val;
 	}
-	//method to check and return number of white pegs
+	/* method to check and return number of white pegs 
+		(the existence of a correct color code peg placed in the wrong position)
+	*/
 	static int whites (int [] one, int [] two){
 		boolean found;
 		int val=0;
@@ -102,9 +104,9 @@ public class Mastermind_v2 extends JFrame  implements ActionListener {
 		}
 /*	
 	 GAME CONSTRUCTOR
-	 specifying number of chances to guess, number of pegs and number of different colours	
+	 specifying number of chances to guess, number of pegs and different colours	
 */
-	public Mastermind_v2(int max_guesses, int pegs, int colours) {
+	public Mastermind_v1(int max_guesses, int pegs, int colours) {
 		width=pegs;
 		height=max_guesses; 
 		numColors=colours;
@@ -131,31 +133,44 @@ public class Mastermind_v2 extends JFrame  implements ActionListener {
 		blacksPanel.setBorder(BorderFactory.createEmptyBorder(20, 20,
 		20, 20));
 
-		
+		/* 
+			class to implement event to change colour background 
+			it uses bing to set values 
+			using mod (%) it keeps values in range from 0 to maximum number of available colours
+		*/
 		class bing implements ActionListener{   
 			int x,y; 
 		   	
 			public void actionPerformed(ActionEvent e) {
-			  state[x][y]=(state[x][y]+1)%numColors; 
-			  System.out.println("state " + x + " " +y);
-			  ((JButton)(e.getSource())).setBackground(choose(state[x][y]));
+			  state[x][y]=(state[x][y]+1)%numColors; //keep state in specified range
+			  System.out.println("state " + x + " " +y); //print out to console
+			  ((JButton)(e.getSource())).setBackground(choose(state[x][y])); //change the clicked button's background colour
 			}
-		       
+		    //bing constructor 
 		    public bing (int p,int q){
 		         x=p;
 				 y=q;
 		    }	
 		}
-		
+		/*
+			create a secret code buttons
+			set visibility to false
+			create the secret code (random in this case)
+			set button's background colour
+
+		*/
 		for (int k = 0; k < width; k++){
 		  computerGuess[k]= new JButton(); 
-		  computerGuess[k].setOpaque(true);
-		  computerGuess[k].setVisible(true);
+		  computerGuess[k].setVisible(false);
  		  computerGuessPanel.add(computerGuess[k]);
-		  hiddenGuess[k]=rand.nextInt(numColors);// just for now //get k random values between 0 and number of available colours
-		  computerGuess[k].setBackground(choose(hiddenGuess[k]));  
+		  hiddenGuess[k]=rand.nextInt(numColors);//random values between 0 and [number of available colours]
+		  computerGuess[k].setBackground(choose(hiddenGuess[k])); 
 		}
-		
+		/*
+			create guess buttons, set their background to red by default and add action listeners
+			create white and black pegs, set visibility to false by default
+			add all buttons to specific panels
+		*/
 		for (int i = 0; i < height; i++) 
 			for (int j = 0; j < width; j++)
 			 {
@@ -207,19 +222,22 @@ public class Mastermind_v2 extends JFrame  implements ActionListener {
 		setVisible(true); 
 		guessButton.addActionListener(this); //adds click listener to quess button
 	}
-
+	/*
+		actions for the guess button
+	*/
 	public void actionPerformed(ActionEvent e) {
 		int whiteThings=whites(state[numGuesses],hiddenGuess); // get number of white pegs 
 		int blackThings=blacks(state[numGuesses],hiddenGuess); // get number of black pegs
+		
 		for (int i=0;i<width;i++)
 			colouredPegs[numGuesses][i].setEnabled(false);
 		
 		if (blackThings==width){  //no more chances to guess left 
 			for (int i=0;i<blackThings;i++)
-				blacks[numGuesses][i].setVisible(true); 
+				blacks[numGuesses][i].setVisible(true); //show black pegs
 			for (int i=0;i<width;i++) {
 		  		computerGuess[i].setOpaque(true);
-				computerGuess[i].setVisible(false);
+				computerGuess[i].setVisible(true); //show secret code to the user
 			}
 				
 			int n = JOptionPane.showConfirmDialog(this,
@@ -248,7 +266,7 @@ public class Mastermind_v2 extends JFrame  implements ActionListener {
 			  } else { 
 				  	for (int i=0;i<width;i++) {
 				  		computerGuess[i].setOpaque(true);
-				  		computerGuess[i].setVisible(false);
+				  		computerGuess[i].setVisible(true);
 				  	}
 					int n = JOptionPane.showConfirmDialog(this,
 							"You've lost! Would you like to play again?", "You've Won!",
@@ -257,7 +275,7 @@ public class Mastermind_v2 extends JFrame  implements ActionListener {
 						System.exit(0); //terminate completely
 				} else { 
 				dispose(); //destroy and clean up the window
-				new Mastermind(height,width,numColors); //create window game again
+				new Mastermind_v1(height,width,numColors); //create window game again
 				}
 		  }
 	   }		
@@ -265,7 +283,7 @@ public class Mastermind_v2 extends JFrame  implements ActionListener {
 	
 	
 	public static void main(String[] args) {
-		new Mastermind(10,4,6); //10 chances, 4 pegs, 6 colours (as in question 2)
+		new Mastermind_v1(10,4,4); //10 chances, 4 pegs, 4 colours (as in question 2)
 	}
 
 	
