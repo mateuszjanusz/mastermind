@@ -1,5 +1,6 @@
 /* JDBC program created by Mateusz Janusz (mjanu001@gold.ac.uk) 
 * 	March 2017
+*	This is the answer code to question 1.1 & 1.2
 * 	using local server and database due to access declined at igor
 */
 
@@ -48,10 +49,10 @@ public class question1_jdbc {
 	     	stmt.close();
 	     	db.close();
 	        } catch(SQLException se){
-	            //Handle errors for JDBC
+	            //we can handle errors for JDBC here
 	            se.printStackTrace();
 	        } catch(Exception e){
-	            //Handle errors for Class.forName
+	            //we can handle errors for Class.forName here
 	            e.printStackTrace();
 	        }
 	} 
@@ -70,6 +71,7 @@ public class question1_jdbc {
 
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
+			//we can handle errors for SQL here
 			e.printStackTrace();
 		}     
 	}
@@ -97,10 +99,11 @@ public class question1_jdbc {
 	            		"  , " + mark + ")";
 	            stmt.executeUpdate(sql);               
 	        }
-        }
-        catch (IOException e) {
+        } catch (IOException e) { 
+        	//we can handle errors for fileNotFound exception here
         	e.printStackTrace();
         } catch (SQLException e) {
+        	//we can handle errors for SQL here
 			e.printStackTrace();
 		}
 	}
@@ -130,6 +133,7 @@ public class question1_jdbc {
          } catch (IOException e) {
         	e.printStackTrace();
          } catch (SQLException e) {
+         	//we can handle errors for SQL here
  			e.printStackTrace();
  		}
 	}

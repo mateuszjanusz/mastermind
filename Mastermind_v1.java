@@ -1,9 +1,10 @@
-// Mastermind game by Mateusz Janusz (mjanu001@gold.ac.uk)
-// March/April 2017
-// Question 2:
-// - tidied up and commented code
-// - fixed colours on mac
-// - set game to only 4 colours
+/* Mastermind game by Mateusz Janusz (mjanu001@gold.ac.uk)
+ 	March/April 2017
+	This is the answer code to questions 2.2
+	 - tidied up and commented code
+	 - fixed colours on mac
+	 - set game to only 4 colours
+*/ 
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -248,7 +249,7 @@ public class Mastermind_v1 extends JFrame  implements ActionListener {
 			} else { 
 				dispose(); /* causes the JFrame window to be destroyed and cleaned up by the operating system
 								not like system.exit which causes the Java VM to terminate completely.*/
-				new Mastermind(height,width,numColors); //create new window game again
+				new Mastermind_v1(height,width,numColors); //create new window game again
 			}
 		}
 		if (numGuesses<height){ // there is still a number of chances to guess 

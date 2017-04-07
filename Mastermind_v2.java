@@ -1,5 +1,7 @@
-// Mastermind game by Mateusz Janusz (mjanu001@gold.ac.uk)
-// 	March/April 2017
+/* Mastermind game by Mateusz Janusz (mjanu001@gold.ac.uk)
+* 	March/April 2017
+*	This is the answer code to questions 2.4 and 2.5
+*/
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -21,7 +23,7 @@ import javax.swing.JPanel;
 import java.util.Random;
 import java.util.Arrays;
 
-public class Mastermind extends JFrame  implements ActionListener {
+public class Mastermind_v2 extends JFrame  implements ActionListener {
         
 	int width;
 	int height;
@@ -104,7 +106,7 @@ public class Mastermind extends JFrame  implements ActionListener {
 	 GAME CONSTRUCTOR
 	 specifying number of chances to guess, number of pegs and different colours	
 */
-	public Mastermind(int max_guesses, int pegs, int colours) {
+	public Mastermind_v2(int max_guesses, int pegs, int colours) {
 		width=pegs;
 		height=max_guesses; 
 		numColors=colours;
@@ -271,7 +273,7 @@ public class Mastermind extends JFrame  implements ActionListener {
 				} else { 
 					dispose(); /* causes the JFrame window to be destroyed and cleaned up by the operating system
 									not like system.exit which causes the Java VM to terminate completely. */
-					new Mastermind(height,width,numColors); //create new window game again
+					new Mastermind_v2(height,width,numColors); //create new window game again
 				}
 			}
 			if (numGuesses<height){ //there is still a number of chances to guess 
@@ -299,7 +301,7 @@ public class Mastermind extends JFrame  implements ActionListener {
 							System.exit(0); //terminate completely
 					} else { 
 					dispose(); //destroy and clean up the window
-					new Mastermind(height,width,numColors); //create window game again
+					new Mastermind_v2(height,width,numColors); //create window game again
 					}
 			  }
 		   }
@@ -340,7 +342,7 @@ public class Mastermind extends JFrame  implements ActionListener {
 	
 	
 	public static void main(String[] args) {
-		new Mastermind(10,4,6); // chances, pegs, colours
+		new Mastermind_v2(10,4,6); // chances, pegs, colours
 	}
 
 	
